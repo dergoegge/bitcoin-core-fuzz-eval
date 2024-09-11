@@ -45,14 +45,17 @@ RUN pip3 install muttfuzz
 ARG HARNESS
 ENV FUZZ $HARNESS
 
-# How long to fuzz each mutant in seconds
-ARG TIME_PER_MUTANT=300
+# How long to fuzz each mutant in seconds (default: 1h). 
+#
+# Note: For each mutant, `fuzz.sh` uses all cores available, so in total each
+# mutant will be fuzzed for `nproc * TIME_PER_MUTANT` CPU seconds.
+ARG TIME_PER_MUTANT=3600
 ENV TIME_PER_MUTANT $TIME_PER_MUTANT
 # Per input fuzz timeout for libfuzzer
 ARG LIBFUZZER_TIMEOUT=5
 ENV LIBFUZZER_TIMEOUT $LIBFUZZER_TIMEOUT
-# Total duration for evaluation
-ARG EVAL_BUDGET=3600
+# Total duration for evaluation (default: 24h)
+ARG EVAL_BUDGET=86400
 ENV EVAL_BUDGET $EVAL_BUDGET
 
 # Corpus used to determine mutant reachability
