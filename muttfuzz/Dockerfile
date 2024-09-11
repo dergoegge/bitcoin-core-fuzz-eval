@@ -45,20 +45,27 @@ RUN pip3 install muttfuzz
 ARG HARNESS
 ENV FUZZ $HARNESS
 
-# 300s
+# How long to fuzz each mutant in seconds
 ARG TIME_PER_MUTANT=300
 ENV TIME_PER_MUTANT $TIME_PER_MUTANT
-# 5s
+# Per input fuzz timeout for libfuzzer
 ARG LIBFUZZER_TIMEOUT=5
 ENV LIBFUZZER_TIMEOUT $LIBFUZZER_TIMEOUT
-# 1h
+# Total duration for evaluation
 ARG EVAL_BUDGET=3600
 ENV EVAL_BUDGET $EVAL_BUDGET
 
+# Corpus used to determine mutant reachability
 ARG REACHABILITY_CORPUS=/share/corpus
 ENV REACHABILITY_CORPUS $REACHABILITY_CORPUS
+# Seed corpus used for fuzzing the mutants (new find are erased between mutants)
+ARG SEED_CORPUS=$REACHABILITY_CORPUS
+ENV SEED_CORPUS $SEED_CORPUS
+# Location to store muttfuzz results (to be processed by `crunch_results.py`)
 ARG EVAL_RESULTS=/share/results.csv
 ENV EVAL_RESULTS $EVAL_RESULTS
+
+ENV LIBFUZZER_WORK_CORPUS /tmp/work-corpus
 
 COPY ./fuzz.sh .
 ENTRYPOINT [ "./fuzz.sh" ]
